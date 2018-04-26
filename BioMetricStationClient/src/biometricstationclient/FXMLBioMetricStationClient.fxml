@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -59,7 +60,7 @@
             </VBox>
             <VBox layoutY="564.0" prefHeight="490.0" prefWidth="960.0">
                <children>
-                  <LineChart fx:id="heartBeatChart" title="Heartbeat">
+                  <LineChart fx:id="acceleroChart" title="Accelerometer">
                      <xAxis>
                         <NumberAxis side="BOTTOM" />
                      </xAxis>
@@ -69,8 +70,120 @@
                   </LineChart>
                </children>
             </VBox>
-            <VBox layoutX="960.0" layoutY="100.0" prefHeight="490.0" prefWidth="960.0" />
-            <VBox layoutX="960.0" layoutY="564.0" prefHeight="490.0" prefWidth="960.0" />
+            <VBox layoutX="960.0" layoutY="100.0" prefHeight="490.0" prefWidth="960.0">
+               <children>
+                  <LineChart fx:id="heartBeatChart" title="Heartbeat">
+                     <xAxis>
+                        <NumberAxis side="BOTTOM" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis side="LEFT" />
+                     </yAxis>
+                  </LineChart>
+               </children></VBox>
+            <VBox layoutX="960.0" layoutY="564.0" prefHeight="490.0" prefWidth="960.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Temperature = ">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="temperatureLabel" text="&quot;Temperature&quot;">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Heartbeat = ">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="heartbeatLabel" text="&quot;Heartbeat&quot;">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="X accelerometer = ">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label text="&quot;X accelerometer&quot;" fx:id="xAcceleroLabel">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Y accelerometer = ">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="yAcceleroLabel" text="&quot;Y accelerometer&quot;">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Z accelerometer = ">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="zAcceleroLabel" text="&quot;Z accelerometer&quot;">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children></VBox>
             <Button fx:id="refreshData" layoutX="69.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleButtonRefreshData" text="Refresh" />
          </children>
       </AnchorPane>

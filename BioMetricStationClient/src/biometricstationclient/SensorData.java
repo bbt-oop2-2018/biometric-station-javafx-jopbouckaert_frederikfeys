@@ -33,6 +33,18 @@ public class SensorData {
         return heartBeat;
     }
     
+    public double getXAcellero(){
+        return xAccelero;
+    }
+        
+    public double getYAcellero(){
+        return yAccelero;
+    }
+    
+    public double getZAcellero(){
+        return zAccelero;
+    }
+    
     @Override
     public String toString(){
         return "Temperature: " + temperature + " | "+"Heartbeat: " + heartBeat + " | " + "X: " + xAccelero + " | " + "Y:" + yAccelero + " | " + "Z:" + zAccelero;
