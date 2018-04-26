@@ -12,11 +12,17 @@ package biometricstationclient;
 public class SensorData {
     private double heartBeat;
     private double temperature;
+    private double xAccelero;
+    private double yAccelero;
+    private double zAccelero;
     
-    public SensorData(double temperature , double heartBeat){
+    public SensorData(double temperature , double heartBeat , double xAccelero , double yAccelero , double zAccelero){
         
         this.temperature = temperature;
         this.heartBeat = heartBeat;
+        this.xAccelero = xAccelero;
+        this.yAccelero = yAccelero;
+        this.zAccelero = zAccelero;
     }
     
     public double getTemperature() {
@@ -29,6 +35,6 @@ public class SensorData {
     
     @Override
     public String toString(){
-        return "Temperature: " + temperature + " | Heartbeat: " + heartBeat;
+        return "Temperature: " + temperature + " | "+"Heartbeat: " + heartBeat + " | " + "X: " + xAccelero + " | " + "Y:" + yAccelero + " | " + "Z:" + zAccelero;
     }
 }

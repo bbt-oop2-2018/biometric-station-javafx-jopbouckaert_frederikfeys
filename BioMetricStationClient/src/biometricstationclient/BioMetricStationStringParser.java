@@ -16,24 +16,38 @@ public class BioMetricStationStringParser {
         if (!isValidString(dataString)) {
             return null;
         }else{
+
+        int temperatureStart = dataString.indexOf("ABCDE");
+        int heartBeatStart = dataString.indexOf("|");
+        int xAcceleroStart = dataString.indexOf("XXX");
+        int yAcceleroStart = dataString.indexOf("YYY");
+        int zAcceleroStart = dataString.indexOf("ZZZ");
+        int zAcceleroEnd = dataString.indexOf("EDCBA");
+        String temperatureString = dataString.substring(temperatureStart+5,heartBeatStart);
+        String heartBeatString = dataString.substring(heartBeatStart +1,xAcceleroStart);
+        String xAcceleroString = dataString.substring(xAcceleroStart +3,yAcceleroStart);
+        String yAcceleroString = dataString.substring(yAcceleroStart +3,zAcceleroStart);
+        String zAcceleroString = dataString.substring(zAcceleroStart +3,zAcceleroEnd);
+
+        double temperature = Double.parseDouble(temperatureString);
+        double heartBeat = Double.parseDouble(heartBeatString);
+        double xAccelero = Double.parseDouble(xAcceleroString);
+        double yAccelero = Double.parseDouble(yAcceleroString);
+        double zAccelero = Double.parseDouble(zAcceleroString);
+
+        return new SensorData(temperature, heartBeat, xAccelero, yAccelero, zAccelero);
         
-        int temperatureStart = dataString.indexOf("|");
-        int heartBeatStart = dataString.indexOf("[");
-        int heartBeatEnd = dataString.indexOf("]");
-        String waterlevelString = dataString.substring(temperatureStart+1,heartBeatStart);
-        String PUBGRankingString = dataString.substring(heartBeatStart +1,heartBeatEnd);
-        double temperature = Double.parseDouble(waterlevelString);
-        double heartBeat = Double.parseDouble(PUBGRankingString);
-        
-        return new SensorData(temperature, heartBeat);
         
         }
 
     }
 
     private boolean isValidString(String dataString) {
-        return (dataString.indexOf("[") != -1
-                && dataString.indexOf("]") != -1
+        return (dataString.indexOf("ABCDE") != -1
+                && dataString.indexOf("EDCBA") != -1
+                && dataString.indexOf("XXX") != -1
+                && dataString.indexOf("YYY") != -1
+                && dataString.indexOf("ZZZ") != -1
                 && dataString.indexOf("|") != -1);
     }
 

@@ -5,14 +5,17 @@
  */
 package biometricstationclient;
 
-import be.vives.oop.mqtt.chatservice.MqttBiometricStationService;
-import be.vives.oop.mqtt.chatservice.IMqttMessageHandler;
+import biometricstationservice.MqttBiometricStationService;
+import biometricstationservice.IMqttMessageHandler;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
@@ -23,15 +26,33 @@ import javafx.stage.Stage;
 public class FXMLBioMetricStationClientController implements Initializable, IMqttMessageHandler {
     
     @FXML
-    private Label label;
+    private Button refreshData;
+    @FXML private Label label;
+    @FXML private LineChart temperatureChart;
+    @FXML private LineChart heartBeatChart;
+    private XYChart.Series temperatureValues[];
+    private XYChart.Series heartbeatValues[];
+    private final int NUMBER_OF_TEMPERATURE_SERIES = 1;
+    private final int NUMBER_OF_HEARTBEAT_SERIES = 1;
+    private int xValue = 0;
+    private final int WINDOW = 100;
+    private double temperature =0.0;
+    private double heartbeat=0.0;
     MqttBiometricStationService biometricStationService;
     BioMetricStationStringParser parser = new BioMetricStationStringParser();
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-        //biometricStationService.sendMqttData("[" + "ABCDE" + "|"  + "|" +  "|" + "EDCBA" + "]");
+    private void handleButtonRefreshData(ActionEvent event) {
+
+        temperatureValues[0].getData().add(new XYChart.Data(xValue,temperature));
+        heartbeatValues[0].getData().add(new XYChart.Data(xValue,heartbeat)); 
+        xValue++;
+        if (xValue == WINDOW){
+            temperatureValues[0].getData().clear();
+            heartbeatValues[0].getData().clear();
+            xValue = 0;
+            
+        }
     }
     
     @Override
@@ -39,17 +60,59 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
         biometricStationService = new MqttBiometricStationService("jop", "test");
         biometricStationService.setMessageHandler(this);
         disconnectClientOnClose();
-    }  
+        
+        temperatureValues = new XYChart.Series[NUMBER_OF_TEMPERATURE_SERIES];
+        heartbeatValues = new XYChart.Series[NUMBER_OF_HEARTBEAT_SERIES];
+        
+        temperatureValues[0] = createXYChartTemperature("Random temperature");
+        heartbeatValues[0] = createXYChartHeartbeat("Random heartbeat");
+        
+        
+        temperatureChart.getYAxis().setLabel("Temperature [celcius]");
+        temperatureChart.getXAxis().setLabel("Measurement");
+        
+        heartBeatChart.getYAxis().setLabel("Heartbeat [BPM]");
+        heartBeatChart.getXAxis().setLabel("Measurement");
+    } 
+    
     
     
     
     @Override
-    public void messageArrived(String channel, String message) {
-       System.out.println(message);
+    public void messageArrived(String channel, String message) { 
        SensorData data = parser.parse(message);
        System.out.println(data);
-
+       temperature = data.getTemperature();
+       heartbeat = data.getHeartBeat();
+ 
+       
+       
     }
+    
+    
+    
+        private XYChart.Series createXYChartTemperature(String name){
+        
+        XYChart.Series series = new XYChart.Series();
+        series.setName(name);
+        temperatureChart.getData().add(series);
+        return series;
+        
+    }
+    
+    
+    private XYChart.Series createXYChartHeartbeat(String name){
+        
+        XYChart.Series series = new XYChart.Series();
+        series.setName(name);
+        heartBeatChart.getData().add(series);
+        return series;
+        
+    }
+    
+    
+    
+    
     
     
     private void disconnectClientOnClose() {

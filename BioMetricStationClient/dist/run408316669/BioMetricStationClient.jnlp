@@ -8,8 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="BioMetricStationClient.jar" size="7342" download="eager" />
-    <jar href="lib\BioMetricStationService.jar" size="6368" download="eager" />
+    <jar href="BioMetricStationClient.jar" size="7054" download="eager" />
+    <jar href="lib\SensorVisualizer.jar" size="15117" download="eager" />
     <jar href="lib\org.eclipse.paho.client.mqttv3-1.2.0.jar" size="202925" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="BioMetricStationClient" >
