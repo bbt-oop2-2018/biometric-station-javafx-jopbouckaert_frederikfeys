@@ -70,8 +70,8 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
         String yAcceleroString = Double.toString(yAccelero);
         String zAcceleroString = Double.toString(zAccelero);
         
-        temperatureLabel.setText(temperatureString);
-        heartbeatLabel.setText(heartbeatString);
+        temperatureLabel.setText(temperatureString + " °C");
+        heartbeatLabel.setText(heartbeatString+ " BPM");
         xAcceleroLabel.setText(xAcceleroString);
         yAcceleroLabel.setText(yAcceleroString);
         zAcceleroLabel.setText(zAcceleroString);
