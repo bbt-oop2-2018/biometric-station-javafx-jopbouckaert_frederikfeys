@@ -7,9 +7,13 @@ package biometricstationclient;
 
 import biometricstationservice.MqttBiometricStationService;
 import biometricstationservice.IMqttMessageHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,6 +38,8 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     @FXML private Label xAcceleroLabel;
     @FXML private Label yAcceleroLabel;
     @FXML private Label zAcceleroLabel;
+    
+    private Gson gson = new Gson();
 
     private XYChart.Series temperatureValues[];
     private XYChart.Series heartbeatValues[];
@@ -44,50 +50,23 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private final int NUMBER_OF_ACCELERO_SERIES = 3;
     
     private int xValue = 0;
-    private final int WINDOW = 100;
+    private final int WINDOW = 50;
     
     private double temperature =0.0;
     private double heartbeat=0.0;
     private double xAccelero =0.0;
     private double yAccelero=0.0;
     private double zAccelero=0.0;
+    
 
     MqttBiometricStationService biometricStationService;
     BioMetricStationStringParser parser = new BioMetricStationStringParser();
     
-    @FXML
-    private void handleButtonRefreshData(ActionEvent event) {
-
-        temperatureValues[0].getData().add(new XYChart.Data(xValue,temperature));
-        heartbeatValues[0].getData().add(new XYChart.Data(xValue,heartbeat));
-        acceleroValues[0].getData().add(new XYChart.Data(xValue,xAccelero));
-        acceleroValues[1].getData().add(new XYChart.Data(xValue,yAccelero));
-        acceleroValues[2].getData().add(new XYChart.Data(xValue,zAccelero));
-        
-        String temperatureString = Double.toString(temperature);
-        String heartbeatString = Double.toString(heartbeat);
-        String xAcceleroString = Double.toString(xAccelero);
-        String yAcceleroString = Double.toString(yAccelero);
-        String zAcceleroString = Double.toString(zAccelero);
-        
-        temperatureLabel.setText(temperatureString + " °C");
-        heartbeatLabel.setText(heartbeatString+ " BPM");
-        xAcceleroLabel.setText(xAcceleroString);
-        yAcceleroLabel.setText(yAcceleroString);
-        zAcceleroLabel.setText(zAcceleroString);
-        
-        xValue++;
-        if (xValue == WINDOW){
-            temperatureValues[0].getData().clear();
-            heartbeatValues[0].getData().clear();
-            acceleroValues[0].getData().clear();
-            acceleroValues[1].getData().clear();
-            acceleroValues[2].getData().clear();
-            xValue = 0;
-            
-        }
-    }
+    ObservableList value;
     
+    @FXML
+    private void handleButtonRefreshData(ActionEvent event) {}
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
             biometricStationService = new MqttBiometricStationService("jop", "test");
@@ -122,13 +101,19 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     
     @Override
     public void messageArrived(String channel, String message) { 
-       SensorData data = parser.parse(message);
-       System.out.println(data);
-       temperature = data.getTemperature();
-       heartbeat = data.getHeartBeat();
-       xAccelero = data.getXAcellero();
-       yAccelero = data.getYAcellero();
-       zAccelero = data.getZAcellero();
+        try {
+        SensorData dataFromJson = gson.fromJson(message, SensorData.class);
+        System.out.println(dataFromJson);
+        temperature = dataFromJson.getTemperature();
+        heartbeat = dataFromJson.getHeartBeat();
+        xAccelero = dataFromJson.getXAcellero();
+        yAccelero = dataFromJson.getYAcellero();
+        zAccelero = dataFromJson.getZAcellero();
+        setNewData(); 
+        }catch(JsonSyntaxException mje) {
+            
+        }
+
     }
     
     
@@ -181,6 +166,44 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
                 });
             }
         });
+    }
+    
+    
+    private void setNewData() {
+        temperatureValues[0].getData().add(new XYChart.Data(xValue,temperature));
+        heartbeatValues[0].getData().add(new XYChart.Data(xValue,heartbeat));
+        acceleroValues[0].getData().add(new XYChart.Data(xValue,xAccelero));
+        acceleroValues[1].getData().add(new XYChart.Data(xValue,yAccelero));
+        acceleroValues[2].getData().add(new XYChart.Data(xValue,zAccelero));
+        
+        String temperatureString = Double.toString(temperature);
+        String heartbeatString = Double.toString(heartbeat);
+        String xAcceleroString = Double.toString(xAccelero);
+        String yAcceleroString = Double.toString(yAccelero);
+        String zAcceleroString = Double.toString(zAccelero);
+        
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+        temperatureLabel.setText(temperatureString + " °C");
+        heartbeatLabel.setText(heartbeatString+ " BPM");
+        xAcceleroLabel.setText(xAcceleroString);
+        yAcceleroLabel.setText(yAcceleroString);
+        zAcceleroLabel.setText(zAcceleroString);
+    }
+});
+        
+
+        
+        xValue++;
+        if (xValue == WINDOW){
+            temperatureValues[0].getData().clear();
+            heartbeatValues[0].getData().clear();
+            acceleroValues[0].getData().clear();
+            acceleroValues[1].getData().clear();
+            acceleroValues[2].getData().clear();
+            xValue = 0;
+            
+        }
     }
 
     

@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="BioMetricStationClient.jar" size="65071" download="eager" />
+    <jar href="BioMetricStationClient.jar" size="65018" download="eager" />
     <jar href="lib\BioMetricStationService.jar" size="6368" download="eager" />
     <jar href="lib\gson-2.8.2.jar" size="232932" download="eager" />
     <jar href="lib\org.eclipse.paho.client.mqttv3-1.2.0.jar" size="202925" download="eager" />
