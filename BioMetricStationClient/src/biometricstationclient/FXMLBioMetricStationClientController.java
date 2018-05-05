@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,8 +30,6 @@ import javafx.stage.Stage;
  */
 public class FXMLBioMetricStationClientController implements Initializable, IMqttMessageHandler {
 
-    @FXML
-    private Button refreshData;
     @FXML
     private LineChart temperatureChart;
     @FXML
@@ -47,6 +46,18 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private Label yAcceleroLabel;
     @FXML
     private Label zAcceleroLabel;
+    @FXML
+    private Label dateTimeTemperatureLabel;
+    @FXML
+    private Label dateTimeHeartbeatLabel;
+    @FXML
+    private Label dateTimeAcceleroLabel;
+    @FXML
+    private NumberAxis xAxisTemperature;
+    @FXML
+    private NumberAxis xAxisHeartbeat;
+    @FXML
+    private NumberAxis xAxisAccelero;
 
     private Gson gson = new Gson();
 
@@ -57,8 +68,15 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private final int NUMBER_OF_TEMPERATURE_SERIES = 1;
     private final int NUMBER_OF_HEARTBEAT_SERIES = 1;
     private final int NUMBER_OF_ACCELERO_SERIES = 3;
+    private final int SIZE_OF_X_AXIS = 14;
+    private final int NUMBER_OF_X_VALUE = 15;
+    private final int AXIS_TICK=1;
+    private final int AXIS_START=0;
 
-    private int xValue = 0;
+    private double xValueTemperature = 0;
+    private double xValueHeartbeat = 0;
+    private double xValueAccelero = 0;
+
     private final int WINDOW = 50;
 
     private double temperature = 0.0;
@@ -66,17 +84,20 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private double xAccelero = 0.0;
     private double yAccelero = 0.0;
     private double zAccelero = 0.0;
+    
+    private String dateTimeTemperature;
+    private String dateTimeHeartbeat;
+    private String dateTimeAccelero;
+
+    private double multipleCalculatorTemperature = 1.0;
+    private double multipleCalculatorHeartbeat = 1.0;
+    private double multipleCalculatorAccelero = 1.0;
 
     MqttBiometricStationService biometricStationServiceTemperature;
     MqttBiometricStationService biometricStationServiceHeartbeat;
     MqttBiometricStationService biometricStationServiceAccelero;
-    BioMetricStationStringParser parser = new BioMetricStationStringParser();
+    //BioMetricStationStringParser parser = new BioMetricStationStringParser();
 
-    ObservableList value;
-
-    @FXML
-    private void handleButtonRefreshData(ActionEvent event) {
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,12 +114,24 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
 
         temperatureChart.getYAxis().setLabel("Temperature [celcius]");
         temperatureChart.getXAxis().setLabel("Measurement");
+        temperatureChart.getXAxis().setAutoRanging(false);
+        xAxisTemperature.setLowerBound(AXIS_START);
+        xAxisTemperature.setUpperBound(SIZE_OF_X_AXIS);
+        xAxisTemperature.setTickUnit(AXIS_TICK);
 
         heartBeatChart.getYAxis().setLabel("Heartbeat [BPM]");
         heartBeatChart.getXAxis().setLabel("Measurement");
+        heartBeatChart.getXAxis().setAutoRanging(false);
+        xAxisHeartbeat.setLowerBound(AXIS_START);
+        xAxisHeartbeat.setUpperBound(SIZE_OF_X_AXIS);
+        xAxisHeartbeat.setTickUnit(AXIS_TICK);
 
         acceleroChart.getYAxis().setLabel("Movement");
         acceleroChart.getXAxis().setLabel("Measurement");
+        acceleroChart.getXAxis().setAutoRanging(false);
+        xAxisAccelero.setLowerBound(AXIS_START);
+        xAxisAccelero.setUpperBound(SIZE_OF_X_AXIS);
+        xAxisAccelero.setTickUnit(AXIS_TICK);
 
         biometricStationServiceTemperature = new MqttBiometricStationService("jop", "temperature");
         biometricStationServiceTemperature.setMessageHandler(this);
@@ -119,20 +152,22 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
             if (channel.equals("temperature")) {
                 SensorDataTemperature dataFromJsonTemperature = gson.fromJson(message, SensorDataTemperature.class);
                 temperature = dataFromJsonTemperature.getTemperature();
+                dateTimeTemperature = dataFromJsonTemperature.getDateTime();
                 setNewTemperature();
             } else if (channel.equals("heartbeat")) {
                 SensorDataHeartbeat dataFromJsonHeartbeat = gson.fromJson(message, SensorDataHeartbeat.class);
                 heartbeat = dataFromJsonHeartbeat.getHeartbeat();
+                dateTimeHeartbeat = dataFromJsonHeartbeat.getDateTime();
                 setNewHeartbeat();
             } else if (channel.equals("accelero")) {
                 SensorDataAccelero dataFromJsonAccelero = gson.fromJson(message, SensorDataAccelero.class);
                 xAccelero = dataFromJsonAccelero.getXAccelero();
                 yAccelero = dataFromJsonAccelero.getYAccelero();
                 zAccelero = dataFromJsonAccelero.getZAccelero();
+                dateTimeAccelero = dataFromJsonAccelero.getDateTime();
                 setNewAccelero();
             }
 
-            setNewData();
         } catch (JsonSyntaxException mje) {
 
         }
@@ -144,6 +179,7 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
         XYChart.Series series = new XYChart.Series();
         series.setName(name);
         temperatureChart.getData().add(series);
+
         return series;
 
     }
@@ -168,7 +204,7 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
 
     private void disconnectClientOnClose() {
         // Source: https://stackoverflow.com/a/30910015
-        refreshData.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
+        temperatureLabel.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
             if (oldScene == null && newScene != null) {
                 // scene is set for the first time. Now its the time to listen stage changes.
                 newScene.windowProperty().addListener((observableWindow, oldWindow, newWindow) -> {
@@ -185,29 +221,35 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
         });
     }
 
-    private void setNewData() {
-        xValue++;
-        if (xValue == WINDOW) {
-            temperatureValues[0].getData().clear();
-            heartbeatValues[0].getData().clear();
-            acceleroValues[0].getData().clear();
-            acceleroValues[1].getData().clear();
-            acceleroValues[2].getData().clear();
-            xValue = 0;
-
-        }
-
-    }
-
+//    private void setNewX() {
+//        xValue++;
+//        if (xValue == WINDOW) {
+//            temperatureValues[0].getData().clear();
+//            heartbeatValues[0].getData().clear();
+//            acceleroValues[0].getData().clear();
+//            acceleroValues[1].getData().clear();
+//            acceleroValues[2].getData().clear();
+//            xValue = 0;
+//
+//        }
+//
+//    }
     private void setNewTemperature() {
-
-        temperatureValues[0].getData().add(new XYChart.Data(xValue, temperature));
-        String temperatureString = Double.toString(temperature);
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                temperatureValues[0].getData().add(new XYChart.Data(xValueTemperature, temperature));
+                String temperatureString = Double.toString(temperature);
                 temperatureLabel.setText(temperatureString + " °C");
+                dateTimeTemperatureLabel.setText(dateTimeTemperature);
+
+                if (xValueTemperature / NUMBER_OF_X_VALUE == multipleCalculatorTemperature) {
+                    xAxisTemperature.setLowerBound(xValueTemperature);
+                    xAxisTemperature.setUpperBound(xValueTemperature + SIZE_OF_X_AXIS);
+                    multipleCalculatorTemperature++;
+                }
+                xValueTemperature++;
             }
         });
 
@@ -215,13 +257,19 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
 
     private void setNewHeartbeat() {
 
-        heartbeatValues[0].getData().add(new XYChart.Data(xValue, heartbeat));
-        String heartbeatString = Double.toString(heartbeat);
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                heartbeatValues[0].getData().add(new XYChart.Data(xValueHeartbeat, heartbeat));
+                String heartbeatString = Double.toString(heartbeat);
                 heartbeatLabel.setText(heartbeatString + " BPM");
+                dateTimeHeartbeatLabel.setText(dateTimeHeartbeat);
+                if (xValueHeartbeat / NUMBER_OF_X_VALUE == multipleCalculatorHeartbeat) {
+                    xAxisHeartbeat.setLowerBound(xValueHeartbeat);
+                    xAxisHeartbeat.setUpperBound(xValueHeartbeat + SIZE_OF_X_AXIS);
+                    multipleCalculatorHeartbeat++;
+                }
+                xValueHeartbeat++;
             }
         });
 
@@ -229,19 +277,25 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
 
     private void setNewAccelero() {
 
-        acceleroValues[0].getData().add(new XYChart.Data(xValue, xAccelero));
-        acceleroValues[1].getData().add(new XYChart.Data(xValue, yAccelero));
-        acceleroValues[2].getData().add(new XYChart.Data(xValue, zAccelero));
-        String xAcceleroString = Double.toString(xAccelero);
-        String yAcceleroString = Double.toString(yAccelero);
-        String zAcceleroString = Double.toString(zAccelero);
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                acceleroValues[0].getData().add(new XYChart.Data(xValueAccelero, xAccelero));
+                acceleroValues[1].getData().add(new XYChart.Data(xValueAccelero, yAccelero));
+                acceleroValues[2].getData().add(new XYChart.Data(xValueAccelero, zAccelero));
+                String xAcceleroString = Double.toString(xAccelero);
+                String yAcceleroString = Double.toString(yAccelero);
+                String zAcceleroString = Double.toString(zAccelero);
                 xAcceleroLabel.setText(xAcceleroString);
                 yAcceleroLabel.setText(yAcceleroString);
                 zAcceleroLabel.setText(zAcceleroString);
+                dateTimeAcceleroLabel.setText(dateTimeAccelero);
+                if (xValueAccelero / NUMBER_OF_X_VALUE == multipleCalculatorAccelero) {
+                    xAxisAccelero.setLowerBound(xValueAccelero);
+                    xAxisAccelero.setUpperBound(xValueAccelero + SIZE_OF_X_AXIS);
+                    multipleCalculatorAccelero++;
+                }
+                xValueAccelero++;
             }
         });
     }
