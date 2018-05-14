@@ -1,0 +1,47 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30-apr-2018, 11:52:27
+    Author     : jopbo_000
+*/
+
+.background {
+    -fx-background-color: white;
+}
+
+Label{
+   -fx-text-fill: black; 
+}
+
+Button{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-font-size: 16pt;
+}
+
+TextField {
+    -fx-background-color: white;
+    -fx-control-inner-background: white;
+    -fx-highlight-fill: black;
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: lightgray;
+    -fx-border-style: solid;
+    -fx-border-color: white white black white;
+    -fx-border-width: 1;
+}
+
+PasswordField {
+    -fx-background-color: white;
+    -fx-control-inner-background: white;
+    -fx-highlight-fill: black;
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: lightgray;
+    -fx-border-style: solid;
+    -fx-border-color: white white black white;
+    -fx-border-width: 1;
+}
+

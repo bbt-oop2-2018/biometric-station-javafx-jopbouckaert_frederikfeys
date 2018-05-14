@@ -1,0 +1,70 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30-apr-2018, 11:52:27
+    Author     : jopbo_000
+*/
+
+.background {
+    -fx-background-color: white;
+}
+
+.box{
+    -fx-background-color: white;
+}
+
+LineChart{
+    -fx-background-color: white;
+    
+}
+
+.chart-plot-background {
+    -fx-background-color: white;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: black;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: black;
+}
+
+.temperature .default-color0.chart-series-line { -fx-stroke: red; }
+
+.heartbeat .default-color0.chart-series-line { -fx-stroke: blue; }
+
+.accelero .default-color0.chart-series-line { -fx-stroke: orange; }
+.accelero .default-color1.chart-series-line { -fx-stroke: purple; }
+.accelero .default-color2.chart-series-line { -fx-stroke: green; }
+
+.temperature .default-color0.chart-line-symbol { -fx-background-color: red, white; }
+
+.heartbeat .default-color0.chart-line-symbol { -fx-background-color: blue, white; }
+
+.accelero .default-color0.chart-line-symbol { -fx-background-color: orange, white; }
+.accelero .default-color1.chart-line-symbol { -fx-background-color: purple, white; }
+.accelero .default-color2.chart-line-symbol { -fx-background-color: green, white; }
+
+.chart-title {
+  -fx-text-fill: black;
+  -fx-font-size: 22;
+}
+ 
+.axis-label {
+  -fx-text-fill: black;
+  -fx-font-size: 14;
+}
+
+.axis {   
+    -fx-tick-label-fill: black;
+}
+
+Label{
+   -fx-text-fill: black; 
+}
+
+
+

@@ -22,6 +22,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -58,6 +60,10 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private NumberAxis xAxisHeartbeat;
     @FXML
     private NumberAxis xAxisAccelero;
+    @FXML
+    private VBox screen;
+    @FXML
+    private AnchorPane anchor;
 
     private Gson gson = new Gson();
 
@@ -101,7 +107,9 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
+        
+        
         temperatureValues = new XYChart.Series[NUMBER_OF_TEMPERATURE_SERIES];
         heartbeatValues = new XYChart.Series[NUMBER_OF_HEARTBEAT_SERIES];
         acceleroValues = new XYChart.Series[NUMBER_OF_ACCELERO_SERIES];
