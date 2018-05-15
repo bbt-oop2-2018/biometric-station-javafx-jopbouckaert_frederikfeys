@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package biometricstationclient;
 
 import biometricstationservice.MqttBiometricStationService;
@@ -12,15 +7,11 @@ import com.google.gson.JsonSyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -99,17 +90,17 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
     private double multipleCalculatorHeartbeat = 1.0;
     private double multipleCalculatorAccelero = 1.0;
 
-    MqttBiometricStationService biometricStationServiceTemperature;
-    MqttBiometricStationService biometricStationServiceHeartbeat;
-    MqttBiometricStationService biometricStationServiceAccelero;
-    //BioMetricStationStringParser parser = new BioMetricStationStringParser();
+    private MqttBiometricStationService biometricStationServiceTemperature;
+    private MqttBiometricStationService biometricStationServiceHeartbeat;
+    private MqttBiometricStationService biometricStationServiceAccelero;
+    
+    
+    
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
-        
+    
         temperatureValues = new XYChart.Series[NUMBER_OF_TEMPERATURE_SERIES];
         heartbeatValues = new XYChart.Series[NUMBER_OF_HEARTBEAT_SERIES];
         acceleroValues = new XYChart.Series[NUMBER_OF_ACCELERO_SERIES];
@@ -228,20 +219,7 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
             }
         });
     }
-
-//    private void setNewX() {
-//        xValue++;
-//        if (xValue == WINDOW) {
-//            temperatureValues[0].getData().clear();
-//            heartbeatValues[0].getData().clear();
-//            acceleroValues[0].getData().clear();
-//            acceleroValues[1].getData().clear();
-//            acceleroValues[2].getData().clear();
-//            xValue = 0;
-//
-//        }
-//
-//    }
+    
     private void setNewTemperature() {
 
         Platform.runLater(new Runnable() {
@@ -251,6 +229,7 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
                 String temperatureString = Double.toString(temperature);
                 temperatureLabel.setText(temperatureString + " °C");
                 dateTimeTemperatureLabel.setText(dateTimeTemperature);
+                
 
                 if (xValueTemperature / NUMBER_OF_X_VALUE == multipleCalculatorTemperature) {
                     xAxisTemperature.setLowerBound(xValueTemperature);
@@ -307,5 +286,7 @@ public class FXMLBioMetricStationClientController implements Initializable, IMqt
             }
         });
     }
+    
+    
 
 }

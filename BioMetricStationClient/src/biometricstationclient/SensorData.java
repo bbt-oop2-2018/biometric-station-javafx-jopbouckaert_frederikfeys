@@ -1,11 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package biometricstationclient;
-
-import java.util.ArrayList;
 
 /**
  *
@@ -17,12 +10,10 @@ public class SensorData {
     private double xAccelero;
     private double yAccelero;
     private double zAccelero;
-//    int all[]={0,0,0,0,0,0,0,0,0,0};
-//    ArrayList<int[]> value = new ArrayList<int[]>();
+
     
     public SensorData(double temperature , double heartBeat , double xAccelero , double yAccelero , double zAccelero){
         
-//        value.add(0,all);
         this.temperature = temperature;
         this.heartBeat = heartBeat;
         this.xAccelero = xAccelero;
